@@ -14,6 +14,17 @@
     <div id="app">
 
 
+        @auth
+
+        <h1>Already Logged In</h1>
+        <form action="/logout" method="POST">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
+
+
+        @else
+
         <div>
             <h1>Home</h1>
             <p>Welcome to the home page</p>
@@ -36,6 +47,7 @@
             </form>
         </div>
 
+        @endauth
 
     </div>
 
