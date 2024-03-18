@@ -38,13 +38,45 @@ class UserController extends Controller
             auth()->login($user);   
 
             // If validation passes, continue with your logic
-            return redirect('/');
+            return redirect('/home');
         }
     }
 
     function logout()
     {
         auth()->logout();
-        return redirect('/login');
+        return redirect('/');
+    }
+
+    function login(Request $req){
+
+
+        // check if the incoming request parameters are correct
+        $validator = Validator::make($req->all(), [
+            'login_email' => ['required', 'email', 'max:255'],
+            'login_password' => ['required', 'min:8', 'max:255']
+        ]);
+
+
+        if ($validator->fails()) {
+            // If validation fails, return the error messages
+            return response()->json(['errors' => $validator->errors()], 422);
+        } else {
+
+            $incomingReq = $req->all();
+
+            // if the incoming request parameters are correct, attempt to login
+            if(auth()->attempt(['email' => $incomingReq['login_email'], 'password' => $incomingReq['login_password']])){
+                
+                // If the login attempt is successful, regenerate the session
+                $req->session()->regenerate();
+                
+            }
+
+
+
+
+        }
+
     }
 }
