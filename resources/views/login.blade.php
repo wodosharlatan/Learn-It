@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/font.css') }}" >
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mainStyles.css') }}" >
     <title>Learn It</title>
 
 
@@ -27,6 +27,7 @@
             @csrf
             <button type="submit">Logout</button>
         </form>
+        <h2>Go to <a href="/home">Dashboard</a> </h2>
 
 
         @else
