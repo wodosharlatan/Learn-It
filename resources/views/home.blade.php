@@ -1,16 +1,31 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/mainStyles.css') }}" >
 
-        <title>Learn It</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mainStyles.css') }}">
+
+    <title>Learn It</title>
 </head>
+
 <body>
-    
-        @auth
+
+    @auth
 
         <h1>Welcome to Learn-It</h1>
+
+        <ul>
+            @foreach ($reservations as $reservation)
+                <h1> Day: {{ $reservation->date }} </h1>
+
+
+                <li> Starts: {{ $reservation->starts_at }}</li>
+                <li> Ends: {{ $reservation->ends_at }}</li>
+                <li> Subject: {{ $reservation->subject }}</li>
+
+
+            @endforeach
+        </ul>
 
         <form action="/new-reservation" method="POST">
             @csrf
@@ -29,13 +44,12 @@
 
             <button type="submit">Reserve</button>
         </form>
-
-        @else
-
+    @else
         <h2>You dont have an account? Register <a href="/">here</a> </h2>
 
 
-        @endauth
+    @endauth
 
 </body>
+
 </html>

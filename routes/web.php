@@ -15,17 +15,19 @@ use App\Http\Controllers\UserController;
 |
 */
 
+// Get routes
+
 Route::get('/', function () {
     return view('login');
 });
 
-Route::get('/home', function () {
-    return view('home');
-});
+Route::get('/home', [ReservationController::class,'getReservations']);
 
 
 
 
+
+// Post routes
 Route::post('/register', [UserController::class,'register']);
 Route::post('/logout', [UserController::class,'logout']);
 Route::post('/login', [UserController::class,'login']);

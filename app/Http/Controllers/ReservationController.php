@@ -48,4 +48,29 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Reservation created successfully'], 200);
         }
     }
+
+
+    function getReservations()
+    {
+        // Get all reservations, sort them by date, dont check user id 
+        $reservations = Reservation::orderBy('date', 'asc')->get();
+
+        // make data more human readable
+        foreach ($reservations as $reservation) {
+
+            // set date to human readable format (e.g. 2024-03-12 to 12.03.2024)
+            $reservation->date = date('d.m.Y', strtotime($reservation->date));
+
+            // remove the date from the time
+            $reservation->starts_at = date('H:i', strtotime($reservation->starts_at));
+            $reservation->ends_at = date('H:i', strtotime($reservation->ends_at));
+        }
+
+
+
+        // return the reservations
+        return view('home', ['reservations' => $reservations]);
+
+    }
+
 }
