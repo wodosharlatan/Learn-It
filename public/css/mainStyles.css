@@ -1,21 +1,21 @@
 @font-face {
-    font-family: 'MarkPro';
-    src: url('./fonts/MarkPro.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: "MarkPro";
+	src: url("./fonts/MarkPro.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 
 * {
-    font-family: 'MarkPro', sans-serif;
-    box-sizing: border-box;
+	font-family: "MarkPro", sans-serif;
+	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
 }
 
-li{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }
 
 html {
@@ -26,9 +26,12 @@ html,
 body,
 #root {
 	min-height: 100vh;
-	background-color: $green-section;
 }
 
-.app{
-
+#app {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding-bottom: 2.5rem;
+	padding-inline: 2rem;
 }

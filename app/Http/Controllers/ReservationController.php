@@ -7,6 +7,8 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+include_once(app_path('Helpers/RedirectFunction.php'));
+
 class ReservationController extends Controller
 {
 
@@ -45,8 +47,7 @@ class ReservationController extends Controller
 
 
         if ($validator->fails()) {
-
-            return response()->json(['errors' => $validator->errors()], 422);
+ 
         } else {
             // Push the validated data to the database
 
@@ -55,12 +56,20 @@ class ReservationController extends Controller
 
             // check if the $req->time_from is in the past
             if (strtotime($req->time_from) < time()) {
-                return response()->json(['message' => 'You cannot create a reservation that is in the past'], 422);
+
+                // throw new error message if the time_from is in the past
+                $validator->errors()->add('time_from', 'You cannot create a reservation in the past');
+
+                return ValidatorRedirect(url()->previous(), $validator, '#form');
             }
 
             // check if the difference between the time_from and time_to is bigger than 1 day
             if (strtotime($req->time_to) - strtotime($req->time_from) > 86400) {
-                return response()->json(['message' => 'You cannot create a reservation that is longer than 24 hours'], 422);
+
+                // throw new error message if the difference between the time_from and time_to is bigger than 1 day
+                $validator->errors()->add('time_to', 'You cannot create a reservation that is longer than 24 hours');
+
+                return ValidatorRedirect(url()->previous(), $validator, '#form');
             }
 
 
@@ -104,18 +113,5 @@ class ReservationController extends Controller
 
         // return the reservations
         return view('home', ['reservations' => $reservations]);
-    }
-
-    function updateReservation(Request $req)
-    {
-
-        // validate the incoming request data
-        $validator = Validator::make($req->all(), [
-            'subject' => ['required', 'max:255'],
-            'time_from' => ['required', 'date'],
-            'time_to' => ['required', 'date'],
-            'id' => ['required', 'integer']
-        ]);
-        
     }
 }

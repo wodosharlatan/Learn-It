@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
+include_once(app_path('Helpers/RedirectFunction.php'));
+
 class UserController extends Controller
 {
 
@@ -16,7 +18,7 @@ class UserController extends Controller
 
         $validator = Validator::make($req->all(), [
             'name' => ['required', 'min:3', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users','email')],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'max:255'],
             'password_confirmation' => ['required', 'min:8', 'same:password']
         ]);
@@ -24,10 +26,7 @@ class UserController extends Controller
 
         if ($validator->fails()) {
 
-            // If validation fails, return the error messages
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return ValidatorRedirect(url()->previous(), $validator, '#form');
         } else {
 
             // get all the incoming request data
@@ -37,7 +36,7 @@ class UserController extends Controller
             $incomingReq['password'] = bcrypt($incomingReq['password']);
 
             $user = User::create($incomingReq);
-            auth()->login($user);   
+            auth()->login($user);
 
             // If validation passes, continue with your logic
             return redirect('/home');
@@ -50,7 +49,8 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    function login(Request $req){
+    function login(Request $req)
+    {
 
 
         // check if the incoming request parameters are correct
@@ -61,24 +61,18 @@ class UserController extends Controller
 
 
         if ($validator->fails()) {
-            // If validation fails, return the error messages
-            return response()->json(['errors' => $validator->errors()], 422);
+
+            return ValidatorRedirect(url()->previous(), $validator, '#form');
         } else {
 
             $incomingReq = $req->all();
 
             // if the incoming request parameters are correct, attempt to login
-            if(auth()->attempt(['email' => $incomingReq['login_email'], 'password' => $incomingReq['login_password']])){
-                
+            if (auth()->attempt(['email' => $incomingReq['login_email'], 'password' => $incomingReq['login_password']])) {
+
                 // If the login attempt is successful, regenerate the session
                 $req->session()->regenerate();
-                
             }
-
-
-
-
         }
-
     }
 }

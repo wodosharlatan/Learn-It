@@ -26,23 +26,27 @@
             </form>
             <h2>Go to <a href="/home">Dashboard</a> </h2>
         @else
+
             @if ($errors->any())
-                <ul>
+                <ul id="errors">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
             @endif
 
+            <br><br><br>
 
             <div>
                 <h1>Home</h1>
                 <p>Welcome to the home page</p>
             </div>
 
+            <br><br><br>
+
             <div>
                 <h2>Register </h2>
-                <form action="/register" method="POST">
+                <form id="form" action="/register" method="POST">
                     @csrf
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" value="{{ old('name') }}">
@@ -64,12 +68,16 @@
 
             <div>
                 <h2>Login </h2>
-                <form action="/login" method="POST">
+                <form id="form" action="/login" method="POST">
                     @csrf
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="login_email">
+                    <input type="email" id="email" name="login_email" value="{{ old('login_email') }}">
+
+
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="login_password">
+                    <input type="password" id="password" name="login_password"  value="{{ old('login_password') }}">
+
+
                     <button type="submit">Login</button>
                 </form>
             </div>
