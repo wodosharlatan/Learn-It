@@ -2,12 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
 {
+
+    protected function sqlQuery()
+    {
+
+        /* SQL
+
+        SELECT reservations.date, users.name, reservations.subject, reservations.starts_at, reservations.ends_at
+        FROM railway.reservations
+        INNER JOIN railway.users ON users.id = reservations.user_id
+        ORDER BY reservations.date ASC;
+
+        */
+
+
+        // join tables and select the data from the reservations table and the users table. Order the data by date in ascending order
+        $result = Reservation::select('reservations.date', 'users.name', 'reservations.subject', 'reservations.starts_at', 'reservations.ends_at')
+            ->join('users', 'users.id', '=', 'reservations.user_id')
+            ->orderBy('reservations.date', 'asc')
+            ->get();
+
+        return $result;
+    }
+
     function newReservation(Request $req)
     {
 
@@ -21,13 +45,24 @@ class ReservationController extends Controller
 
 
         if ($validator->fails()) {
-            
+
             return response()->json(['errors' => $validator->errors()], 422);
         } else {
             // Push the validated data to the database
 
             // get all the incoming request data and create a new reservation instance
             $reservation = new Reservation();
+
+            // check if the $req->time_from is in the past
+            if (strtotime($req->time_from) < time()) {
+                return response()->json(['message' => 'You cannot create a reservation that is in the past'], 422);
+            }
+
+            // check if the difference between the time_from and time_to is bigger than 1 day
+            if (strtotime($req->time_to) - strtotime($req->time_from) > 86400) {
+                return response()->json(['message' => 'You cannot create a reservation that is longer than 24 hours'], 422);
+            }
+
 
             // set the data
             $reservation->starts_at = $req->time_from;
@@ -44,7 +79,7 @@ class ReservationController extends Controller
             $reservation->save();
 
 
-            
+
             return response()->json(['message' => 'Reservation created successfully'], 200);
         }
     }
@@ -52,8 +87,7 @@ class ReservationController extends Controller
 
     function getReservations()
     {
-        // Get all reservations, sort them by date, dont check user id 
-        $reservations = Reservation::orderBy('date', 'asc')->get();
+        $reservations = $this->sqlQuery();
 
         // make data more human readable
         foreach ($reservations as $reservation) {
@@ -70,7 +104,5 @@ class ReservationController extends Controller
 
         // return the reservations
         return view('home', ['reservations' => $reservations]);
-
     }
-
 }

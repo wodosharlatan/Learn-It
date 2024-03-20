@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/mainStyles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/homeStyle.css') }}">
 
     <title>Learn It</title>
 </head>
@@ -19,10 +20,10 @@
                 <h1> Day: {{ $reservation->date }} </h1>
 
 
+                <li> Student's Name: {{ $reservation->name }}</li>
                 <li> Starts: {{ $reservation->starts_at }}</li>
                 <li> Ends: {{ $reservation->ends_at }}</li>
                 <li> Subject: {{ $reservation->subject }}</li>
-
 
             @endforeach
         </ul>
