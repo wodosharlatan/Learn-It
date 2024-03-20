@@ -105,4 +105,17 @@ class ReservationController extends Controller
         // return the reservations
         return view('home', ['reservations' => $reservations]);
     }
+
+    function updateReservation(Request $req)
+    {
+
+        // validate the incoming request data
+        $validator = Validator::make($req->all(), [
+            'subject' => ['required', 'max:255'],
+            'time_from' => ['required', 'date'],
+            'time_to' => ['required', 'date'],
+            'id' => ['required', 'integer']
+        ]);
+        
+    }
 }
