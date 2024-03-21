@@ -72,6 +72,7 @@ class UserController extends Controller
 
                 // If the login attempt is successful, regenerate the session
                 $req->session()->regenerate();
+                return redirect('/home');
             }
         }
     }

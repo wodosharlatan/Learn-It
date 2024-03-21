@@ -25,6 +25,17 @@
                     <li> Starts: {{ $reservation->starts_at }}</li>
                     <li> Ends: {{ $reservation->ends_at }}</li>
                     <li> Subject: {{ $reservation->subject }}</li>
+
+
+
+                    @if(auth()->user()->id == $reservation->user_id)
+                        <form action="/delete-reservation/{{ $reservation->id }}" method="POST">
+                            @csrf
+                            <button type="submit">Delete</button>
+                        </form>
+                    @endif
+
+
                 @endforeach
             </ul>
 
@@ -52,7 +63,6 @@
 
                 <label for="subject">Subject</label>
                 <input type="text" id="subject" name="subject" value="{{ old('subject') }}">
-
 
 
                 <button type="submit">Reserve</button>

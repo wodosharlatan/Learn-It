@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 
 include_once(app_path('Helpers/RedirectFunction.php'));
 
@@ -26,7 +27,7 @@ class ReservationController extends Controller
 
 
         // join tables and select the data from the reservations table and the users table. Order the data by date in ascending order
-        $result = Reservation::select('reservations.date', 'users.name', 'reservations.subject', 'reservations.starts_at', 'reservations.ends_at')
+        $result = Reservation::select('reservations.id','reservations.date','reservations.user_id', 'users.name', 'reservations.subject', 'reservations.starts_at', 'reservations.ends_at')
             ->join('users', 'users.id', '=', 'reservations.user_id')
             ->orderBy('reservations.date', 'asc')
             ->get();
@@ -47,6 +48,8 @@ class ReservationController extends Controller
 
 
         if ($validator->fails()) {
+            // If validation fails, redirect back to the form with the errors
+            return ValidatorRedirect(url()->previous(), $validator, '#form');
  
         } else {
             // Push the validated data to the database
@@ -110,8 +113,38 @@ class ReservationController extends Controller
         }
 
 
-
         // return the reservations
         return view('home', ['reservations' => $reservations]);
+    }
+
+    function deleteReservation()
+    {
+        // get the reservation id
+        $id = request('id');
+
+        // find the reservation by the id
+        $reservation = Reservation::find($id);
+
+        // check if the reservation exists
+        if ($reservation) {
+
+            // check if the authenticated user is the owner of the reservation
+            if ($reservation->user_id == auth()->user()->id) {
+
+                // delete the reservation
+                $reservation->delete();
+
+                return response()->json(['message' => 'Reservation deleted successfully'], 200);
+            }
+        }
+
+        // Create a new MessageBag instance
+        $errors = new MessageBag();
+
+        // Add a custom error message
+        $errors->add('id', 'Reservation not found');
+        
+        // If the reservation does not exist, redirect back to the previous page with the error message
+        return ValidatorRedirect(url()->previous(), $errors, '');
     }
 }

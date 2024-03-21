@@ -42,24 +42,24 @@
                 <p>Welcome to the home page</p>
             </div>
 
-            <br><br><br>
+            <br><br>
 
             <div>
                 <h2>Register </h2>
                 <form id="form" action="/register" method="POST">
                     @csrf
                     <label for="name">Name</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}">
+                    <input type="text" id="name" name="name" value="{{ old('name') }}"><br>
 
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}">
+                    <input type="email" id="email" name="email" value="{{ old('email') }}"><br>
 
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" value="{{ old('password') }}">
+                    <input type="password" id="password" name="password" value="{{ old('password') }}"><br>
 
                     <label for="password_confirmation">Confirm Password</label>
                     <input type="password" id="password_confirmation" name="password_confirmation"
-                        value="{{ old('password_confirmation') }}">
+                        value="{{ old('password_confirmation') }}"><br>
 
 
                     <button type="submit">Register</button>
@@ -71,11 +71,11 @@
                 <form id="form" action="/login" method="POST">
                     @csrf
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="login_email" value="{{ old('login_email') }}">
+                    <input type="email" id="email" name="login_email" value="{{ old('login_email') }}"><br>
 
 
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="login_password"  value="{{ old('login_password') }}">
+                    <input type="password" id="password" name="login_password"  value="{{ old('login_password') }}"><br>
 
 
                     <button type="submit">Login</button>
