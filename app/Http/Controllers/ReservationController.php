@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
+
 include_once(app_path('Helpers/RedirectFunction.php'));
 
 class ReservationController extends Controller
 {
 
-    protected function sqlQuery()
+    protected function sqlQueryJoinTables()
     {
 
         /* SQL
@@ -27,7 +28,7 @@ class ReservationController extends Controller
 
 
         // join tables and select the data from the reservations table and the users table. Order the data by date in ascending order
-        $result = Reservation::select('reservations.id','reservations.date','reservations.user_id', 'users.name', 'reservations.subject', 'reservations.starts_at', 'reservations.ends_at')
+        $result = Reservation::select('reservations.id', 'reservations.date', 'reservations.user_id', 'users.name', 'reservations.subject', 'reservations.starts_at', 'reservations.ends_at')
             ->join('users', 'users.id', '=', 'reservations.user_id')
             ->orderBy('reservations.date', 'asc')
             ->get();
@@ -50,7 +51,6 @@ class ReservationController extends Controller
         if ($validator->fails()) {
             // If validation fails, redirect back to the form with the errors
             return ValidatorRedirect(url()->previous(), $validator, '#form');
- 
         } else {
             // Push the validated data to the database
 
@@ -99,7 +99,7 @@ class ReservationController extends Controller
 
     function getReservations()
     {
-        $reservations = $this->sqlQuery();
+        $reservations = $this->sqlQueryJoinTables();
 
         // make data more human readable
         foreach ($reservations as $reservation) {
@@ -143,8 +143,45 @@ class ReservationController extends Controller
 
         // Add a custom error message
         $errors->add('id', 'Reservation not found');
-        
+
         // If the reservation does not exist, redirect back to the previous page with the error message
         return ValidatorRedirect(url()->previous(), $errors, '');
     }
+
+    function AdminPanelReservationView()
+    {
+        // Retrieve all reservations ordered by date
+        $reservations = Reservation::orderBy('date', 'asc')->get();
+    
+        // Extract distinct dates
+        $distinctDates = $reservations->unique('date')->pluck('date');
+    
+        // Create an empty array to store reservations grouped by date
+        $reservationsByDate = [];
+    
+        // Iterate over each distinct date
+        foreach ($distinctDates as $date) {
+            // Filter reservations by date
+            $reservationsForDate = $reservations->where('date', $date);
+    
+            // Iterate over each reservation and format the date and time
+            foreach ($reservationsForDate as $reservation) {
+                $reservation->starts_at = date('H:i', strtotime($reservation->starts_at));
+                $reservation->ends_at = date('H:i', strtotime($reservation->ends_at));
+    
+                // Remove the date attribute
+                unset($reservation->date);
+            }
+    
+            // Sort reservations by starts_at
+            $reservationsForDate = $reservationsForDate->sortBy('starts_at');
+    
+            // Store reservations for the current date as an associative array
+            $reservationsByDate[$date] = $reservationsForDate->values()->toArray();
+        }
+    
+        // return the reservations grouped by date
+        return $reservationsByDate;
+    }
+    
 }

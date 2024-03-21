@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 Route::get('/home', [ReservationController::class,'getReservations']);
-
+Route::get('/TESTING_ROUTE',[ReservationController::class,'AdminPanelReservationView']);
 
 
 
@@ -33,3 +33,5 @@ Route::post('/logout', [UserController::class,'logout']);
 Route::post('/login', [UserController::class,'login']);
 Route::post('/new-reservation', [ReservationController::class,'newReservation']);
 Route::post('/delete-reservation/{id}', [ReservationController::class,'deleteReservation']);
+
+
