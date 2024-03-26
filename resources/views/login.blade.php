@@ -26,7 +26,6 @@
             </form>
             <h2>Go to <a href="/home">Dashboard</a> </h2>
         @else
-
             @if ($errors->any())
                 <ul id="errors">
                     @foreach ($errors->all() as $error)
@@ -75,7 +74,7 @@
 
 
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="login_password"  value="{{ old('login_password') }}"><br>
+                    <input type="password" id="password" name="login_password" value="{{ old('login_password') }}"><br>
 
 
                     <button type="submit">Login</button>
@@ -86,7 +85,14 @@
 
     </div>
 
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
     <script src="{{ asset('js/app.js') }}"></script>
+
+
 </body>
 
 </html>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Models\Reservation;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,15 +18,13 @@ use App\Http\Controllers\UserController;
 
 // Get routes
 
-Route::get('/', function () {
-    return view('login');
-});
-
+Route::get('/',[UserController::class,'hero']);
 Route::get('/home', [ReservationController::class,'getReservations']);
-Route::get('/TESTING_ROUTE',[ReservationController::class,'AdminPanelReservationView']);
+Route::get('/admin-panel',[ReservationController::class,'AdminPanelReservationView']);
 
-
-
+// Get routes => these prevents from resending the form data when the page is refreshed
+Route::get('/new-reservation',[ReservationController::class,'newReservationGetMethod']);
+Route::get('/delete-reservation/{id}', [ReservationController::class,'deleteReservationGetMethod']);
 
 // Post routes
 Route::post('/register', [UserController::class,'register']);

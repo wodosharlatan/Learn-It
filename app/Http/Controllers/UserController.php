@@ -38,7 +38,6 @@ class UserController extends Controller
             $user = User::create($incomingReq);
             auth()->login($user);
 
-            // If validation passes, continue with your logic
             return redirect('/home');
         }
     }
@@ -47,6 +46,11 @@ class UserController extends Controller
     {
         auth()->logout();
         return redirect('/');
+    }
+
+    function hero()
+    {
+        return view('login');
     }
 
     function login(Request $req)

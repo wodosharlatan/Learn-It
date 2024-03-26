@@ -90,14 +90,20 @@ class ReservationController extends Controller
             // save the reservation
             $reservation->save();
 
+            // get new reservations
+            $newReservationList = $this->getReservationsHelper();
 
-
-            return response()->json(['message' => 'Reservation created successfully'], 200);
+            // return a success message
+            return view('home', ['reservations' => $newReservationList]);
         }
     }
 
+    function newReservationGetMethod()
+    {
+        return redirect('/home');
+    }
 
-    function getReservations()
+    function getReservationsHelper()
     {
         $reservations = $this->sqlQueryJoinTables();
 
@@ -112,6 +118,15 @@ class ReservationController extends Controller
             $reservation->ends_at = date('H:i', strtotime($reservation->ends_at));
         }
 
+        return $reservations;
+    }
+
+
+    function getReservations()
+    {
+
+        // get the reservations
+        $reservations = $this->getReservationsHelper();
 
         // return the reservations
         return view('home', ['reservations' => $reservations]);
@@ -134,7 +149,11 @@ class ReservationController extends Controller
                 // delete the reservation
                 $reservation->delete();
 
-                return response()->json(['message' => 'Reservation deleted successfully'], 200);
+                // get new reservations
+                $newReservationList = $this->getReservationsHelper();
+
+                // return a success message
+                return view('home', ['reservations' => $newReservationList]);
             }
         }
 
@@ -148,40 +167,44 @@ class ReservationController extends Controller
         return ValidatorRedirect(url()->previous(), $errors, '');
     }
 
+    function deleteReservationGetMethod()
+    {
+        return redirect('/home');
+    }
+
     function AdminPanelReservationView()
     {
         // Retrieve all reservations ordered by date
         $reservations = Reservation::orderBy('date', 'asc')->get();
-    
+
         // Extract distinct dates
         $distinctDates = $reservations->unique('date')->pluck('date');
-    
+
         // Create an empty array to store reservations grouped by date
         $reservationsByDate = [];
-    
+
         // Iterate over each distinct date
         foreach ($distinctDates as $date) {
             // Filter reservations by date
             $reservationsForDate = $reservations->where('date', $date);
-    
+
             // Iterate over each reservation and format the date and time
             foreach ($reservationsForDate as $reservation) {
                 $reservation->starts_at = date('H:i', strtotime($reservation->starts_at));
                 $reservation->ends_at = date('H:i', strtotime($reservation->ends_at));
-    
+
                 // Remove the date attribute
                 unset($reservation->date);
             }
-    
+
             // Sort reservations by starts_at
             $reservationsForDate = $reservationsForDate->sortBy('starts_at');
-    
+
             // Store reservations for the current date as an associative array
             $reservationsByDate[$date] = $reservationsForDate->values()->toArray();
         }
-    
+
         // return the reservations grouped by date
-        return $reservationsByDate;
+        return view('admin-panel', ['reservationsByDate' => $reservationsByDate]);
     }
-    
 }

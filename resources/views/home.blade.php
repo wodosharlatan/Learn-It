@@ -15,6 +15,7 @@
         @auth
 
             <h1>Welcome to Learn-It</h1>
+            <br><br>
 
             <ul>
                 @foreach ($reservations as $reservation)
@@ -28,13 +29,14 @@
 
 
 
-                    @if(auth()->user()->id == $reservation->user_id)
+                    @if (auth()->user()->id == $reservation->user_id)
                         <form action="/delete-reservation/{{ $reservation->id }}" method="POST">
                             @csrf
                             <button type="submit">Delete</button>
                         </form>
                     @endif
 
+                    <br>
 
                 @endforeach
             </ul>
@@ -73,6 +75,13 @@
 
         @endauth
     </div>
+
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
 </body>
 
