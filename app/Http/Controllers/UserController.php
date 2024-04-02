@@ -65,8 +65,7 @@ class UserController extends Controller
 
 
         if ($validator->fails()) {
-
-            return ValidatorRedirect(url()->previous(), $validator, '#form');
+            return ValidatorRedirect(url()->previous(), $validator, '');
         } else {
 
             $incomingReq = $req->all();
@@ -78,6 +77,10 @@ class UserController extends Controller
                 $req->session()->regenerate();
                 return redirect('/home');
             }
+
+            $authValidator = ['errors' => 'The email or password is incorrect'];
+            
+            return ValidatorRedirect(url()->previous(), $authValidator, '');
         }
     }
 }
